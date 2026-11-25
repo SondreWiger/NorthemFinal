@@ -34,6 +34,8 @@ button { font: inherit; color: inherit; }
 /* micrographics */
 .nm-needle { transform-origin: 100px 100px; animation: nm-search 9s ease-in-out infinite; }
 @keyframes nm-search { 0%,100% { transform: rotate(-14deg); } 40% { transform: rotate(9deg); } 70% { transform: rotate(-3deg); } }
+/* Fade the edges so the blurred band never ends in a hard line where the SVG box stops. */
+.nm-aurora { -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 55%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 55%, transparent 100%); }
 .nm-aurora .nm-au-a { animation: nm-drift 18s ease-in-out infinite alternate; }
 .nm-aurora .nm-au-b { animation: nm-drift 24s ease-in-out infinite alternate-reverse; }
 @keyframes nm-drift { from { transform: translateX(-4%) scaleY(.9); } to { transform: translateX(4%) scaleY(1.15); } }

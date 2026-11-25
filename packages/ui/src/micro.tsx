@@ -69,7 +69,7 @@ export function Aurora({ className, style }: P) {
         <linearGradient id="nm-au1" x1="0" x2="0" y1="0" y2="1">
           <stop offset="0" stopColor="var(--aurora-1, #3cf0b4)" stopOpacity="0" />
           <stop offset=".55" stopColor="var(--aurora-1, #3cf0b4)" stopOpacity=".35" />
-          <stop offset="1" stopColor="var(--aurora-2, #7a5cff)" stopOpacity="0" />
+          <stop offset=".85" stopColor="var(--aurora-2, #7a5cff)" stopOpacity="0" />
         </linearGradient>
         <filter id="nm-blur"><feGaussianBlur stdDeviation="18" /></filter>
       </defs>
