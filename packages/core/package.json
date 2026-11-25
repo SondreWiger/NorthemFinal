@@ -1,0 +1,43 @@
+{
+  "name": "@northem/core",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    "./types": "./src/types.ts",
+    "./roles": "./src/roles.ts",
+    "./env": "./src/env.ts",
+    "./supabase/server": "./src/supabase/server.ts",
+    "./supabase/browser": "./src/supabase/browser.ts",
+    "./supabase/admin": "./src/supabase/admin.ts",
+    "./session": "./src/session.ts",
+    "./queries": "./src/queries.ts",
+    "./demo": "./src/demo.ts",
+    "./mail": "./src/mail.ts",
+    "./forms": "./src/forms.ts",
+    "./invites": "./src/invites.ts",
+    "./integrations": "./src/integrations.ts",
+    "./crypto": "./src/crypto.ts",
+    "./format": "./src/format.ts",
+    "./supabase/proxy": "./src/supabase/proxy.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.119.2",
+    "server-only": "^0.0.1"
+  },
+  "peerDependencies": {
+    "next": "16.4.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "next": "16.4.6",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "@types/react": "^19",
+    "typescript": "^5.9.3"
+  }
+}

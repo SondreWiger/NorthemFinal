@@ -1,0 +1,4 @@
+{ "name": "@northem/web", "private": true, "version": "0.1.0",
+  "scripts": { "dev": "next dev -p 3000", "build": "next build", "start": "next start", "lint": "eslint .", "typecheck": "tsc --noEmit" },
+  "dependencies": { "next": "16.4.6", "react": "19.3.1", "react-dom": "19.3.1" },
+  "devDependencies": { "@types/node": "^22", "@types/react": "^19", "@types/react-dom": "^19", "typescript": "^5.9.3" } }

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "ui": "stream",
+  "globalEnv": ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY", "NEXT_PUBLIC_ROOT_DOMAIN", "NEXT_PUBLIC_PORTAL_URL", "NEXT_PUBLIC_ADMIN_URL", "NEXT_PUBLIC_SITE_URL", "COOKIE_DOMAIN", "ORG_SLUG"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": ["SUPABASE_SERVICE_ROLE_KEY", "RESEND_API_KEY", "MAIL_FROM", "MAIL_INBOX", "CONNECTIONS_ENC_KEY", "SPS_BASE_URL", "GRAPHITE_BASE_URL"]
+    },
+    "dev": { "cache": false, "persistent": true },
+    "lint": {},
+    "typecheck": { "dependsOn": ["^typecheck"] }
+  }
+}
