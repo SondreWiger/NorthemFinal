@@ -17,7 +17,8 @@ export default async function Me(props: PageProps<'/me'>) {
   if (!s) redirect('/login?next=/me');
   const p = s.profile;
   const conns = await listConnections(s.userId);
-  const canConnect = hasServiceRole() && Boolean(serverEnv().encKey);
+  const missingKeys = [!hasServiceRole() && 'SUPABASE_SERVICE_ROLE_KEY', !serverEnv().encKey && 'CONNECTIONS_ENC_KEY'].filter(Boolean) as string[];
+  const canConnect = missingKeys.length === 0;
   const links = [...(p.links ?? []), { label: '', url: '' }, { label: '', url: '' }].slice(0, Math.max(3, (p.links?.length ?? 0) + 1));
   return (
     <>
@@ -54,7 +55,7 @@ export default async function Me(props: PageProps<'/me'>) {
           <section className="card">
             <h2>Connected tools</h2>
             <p className="muted small">Connect your own accounts so scripts and tasks show up on your projects. You only ever see what you can see there.</p>
-            {!canConnect ? <Notice>Connections need the server keys set up first (see SETUP.md).</Notice> : null}
+            {!canConnect ? <Notice>This server can't see {missingKeys.join(' or ')} yet. Add it to this Vercel project for the environment you're on ({process.env.VERCEL_ENV ?? 'local'}), then redeploy.</Notice> : null}
             <div className="stack">
               {(Object.keys(PROVIDERS) as Provider[]).map((k) => {
                 const c = conns.find((x) => x.provider === k);
