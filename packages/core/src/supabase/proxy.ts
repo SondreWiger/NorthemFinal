@@ -8,7 +8,11 @@ import { env, hasSupabase } from '../env';
  */
 export async function refreshSession(request: NextRequest, response = NextResponse.next({ request })) {
   if (!hasSupabase) return { response, user: null };
-  const domain = process.env.COOKIE_DOMAIN || undefined;
+  const configured = process.env.COOKIE_DOMAIN || undefined;
+  const host = request.nextUrl.hostname.toLowerCase();
+  const bare = configured?.replace(/^\./, '').toLowerCase();
+  // Same rule as cookieDomainFor(): previews on other hosts keep host-only cookies.
+  const domain = bare && (host === bare || host.endsWith(`.${bare}`)) ? configured : undefined;
   let res = response;
   const supabase = createServerClient(env.supabaseUrl, env.supabaseAnonKey, {
     cookieOptions: domain ? { domain } : undefined,
