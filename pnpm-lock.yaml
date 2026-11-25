@@ -17,6 +17,12 @@ importers:
 
   apps/web:
     dependencies:
+      '@northem/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@northem/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       next:
         specifier: 16.4.6
         version: 16.4.6(@types/node@22.20.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
