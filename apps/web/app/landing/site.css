@@ -78,3 +78,50 @@ body:has(.site-landing) { background: #0e0d0c; }
 .pro-card small { color: var(--muted); }
 .pro-card-hot strong { color: var(--accent); }
 @media (max-width: 640px) { .pro-cards { grid-template-columns: 1fr; } }
+
+/* --- motion + new bits --- */
+.l-hero-stars { position: absolute; inset: 0; width: 100%; height: 100%; color: #f3eee8; opacity: .7; }
+.l-letter { display: inline-block; animation: l-rise .9s var(--ease) both; animation-delay: calc(var(--i) * 55ms + 150ms); transition: transform .3s var(--ease), color .3s; }
+.l-word:hover .l-letter { transform: translateY(calc(sin(var(--i) * 1rad) * 6px)); }
+.l-letter:hover { color: var(--accent-2); transform: translateY(-10px) !important; }
+@keyframes l-rise { from { transform: translateY(40%); opacity: 0; filter: blur(6px); } }
+.l-slate { position: absolute; width: clamp(44px, 6vw, 84px); top: -.55em; left: .02em; color: var(--fg); z-index: 2; }
+.l-slate svg { width: 100%; height: auto; }
+.l-coords .fx-clock { letter-spacing: .14em; }
+.l-scroll { position: absolute; left: 50%; bottom: 18px; width: 22px; height: 36px; border: 1px solid var(--muted); border-radius: 12px; transform: translateX(-50%); z-index: 3; }
+.l-scroll span { position: absolute; left: 50%; top: 7px; width: 2px; height: 7px; margin-left: -1px; background: var(--accent); border-radius: 2px; animation: l-wheel 1.8s var(--ease) infinite; }
+@keyframes l-wheel { 0% { opacity: 0; transform: translateY(-3px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(12px); } }
+@media (max-width: 760px) { .l-scroll { display: none; } }
+.l-compass { cursor: crosshair; transition: transform 1.2s var(--ease); } .l-compass:hover { transform: rotate(-360deg); }
+
+.l-band { border-bottom: 1px solid var(--line); background: linear-gradient(180deg, #13110f, var(--bg)); }
+.l-band-inner { display: grid; grid-template-columns: 1.6fr 1fr; gap: 40px; align-items: center; padding-top: 34px; padding-bottom: 34px; }
+@media (max-width: 860px) { .l-band-inner { grid-template-columns: 1fr; } }
+.l-numbers { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+@media (max-width: 640px) { .l-numbers { grid-template-columns: 1fr 1fr; } }
+.l-numbers strong { display: block; white-space: nowrap; font-family: var(--font-display); font-size: clamp(34px, 4.4vw, 56px); line-height: 1; font-variant-numeric: tabular-nums; }
+.l-numbers li:last-child strong { color: var(--accent-2); }
+.l-numbers span { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.l-daylight { color: var(--accent-2); }
+
+.l-h2-sub { color: var(--muted); max-width: 60ch; margin: -14px 0 28px; }
+.door-num { position: absolute; top: 18px; right: 20px; transition: color .3s; }
+.door:hover .door-num { color: var(--fg); }
+.door-name { transition: letter-spacing .4s var(--ease); }
+.door:hover .door-name { letter-spacing: .04em; }
+.door-prod:hover .door-name { letter-spacing: .01em; }
+.door-sprockets { animation: l-roll 6s linear infinite paused; }
+.door-prod:hover .door-sprockets { animation-play-state: running; }
+@keyframes l-roll { to { transform: translateX(-20px); } }
+.door-spec { position: relative; }
+.door-radar { position: absolute; right: -10px; top: -14px; width: 120px; height: 120px; opacity: .55; transition: opacity .3s; }
+.door-specprod:hover .door-radar { opacity: 1; }
+.door-so .nm-sticker { transition: transform .35s cubic-bezier(.3, 1.6, .5, 1); }
+.door-so:hover .nm-sticker:first-child { transform: rotate(-14deg) translateY(-8px) scale(1.08) !important; }
+.door-so:hover .nm-sticker:last-child { transform: rotate(12deg) translateY(6px) scale(1.1) !important; }
+.l-intents a { overflow: hidden; }
+.l-intents a::before { content: ''; position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease); }
+.l-intents a:hover::before { transform: scaleX(1); }
+.l-marquee a { transition: border-color .2s, transform .25s var(--ease); } .l-marquee a:hover { transform: translateY(-4px); }
+.l-marquee .nm-avatar { transition: transform .3s var(--ease); } .l-marquee a:hover .nm-avatar { transform: scale(1.08) rotate(-4deg); }
+@media (max-width: 760px) { .l-word { margin-top: 34px; } }

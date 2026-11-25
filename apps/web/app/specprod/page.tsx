@@ -1,6 +1,6 @@
 import { getDivisions, listOpenings, listProjects } from '@northem/core/queries';
-import { Crystal, Grain, Hazard, Telemetry, Topo } from '@northem/ui/micro';
-import { OpeningList, ProjectGrid } from '@northem/ui/public';
+import { Crystal, Grain, Hazard, Radar, Telemetry, Topo } from '@northem/ui/micro';
+import { LocalClock, OpeningList, ProjectGrid, WindChill } from '@northem/ui/public';
 import { SiteForm } from '@northem/ui/forms';
 import { submitForm } from '@/actions';
 import { SITE_CONFIG } from '@/sites';
@@ -37,6 +37,7 @@ export default async function SpecHome() {
         <Topo seed="specprod-ridge" lines={18} className="s-topo" />
         <div className="s-snow" aria-hidden />
         <Grain opacity={0.14} />
+        <Radar seed="specprod-hero" className="s-radar" />
         <div className="nm-wrap s-hero-inner">
           <Telemetry temp="−31" wind="24" alt="1 833" label="FIELD UNIT 03" />
           <h1>We shoot<br />where it <span>hurts.</span></h1>
@@ -47,7 +48,7 @@ export default async function SpecHome() {
           </div>
         </div>
         <div className="s-readout nm-wrap" aria-hidden>
-          <span>LAT 78.22 N</span><span>LON 15.65 E</span><span>VIS 400 M</span><span>WINDCHILL −47</span><span>BATT 61%</span>
+          <span>LAT 78.22 N</span><span>LON 15.65 E</span><LocalClock tz="Arctic/Longyearbyen" place="Longyearbyen" /><span>VIS 400 M</span><span>WINDCHILL −47</span><span className="s-batt">BATT <b>61%</b></span>
         </div>
       </section>
       <Hazard />
@@ -71,8 +72,14 @@ export default async function SpecHome() {
         <ProjectGrid projects={projects} divisions={divisions} site="specprod" variant="frames" />
       </section>
 
+      <section className="nm-wrap s-section">
+        <h2 className="s-h2"><span>03 /</span> Field calculator</h2>
+        <p className="s-lede s-calc-lede">Drag the sliders. This is the first number we look at when planning a cold shoot, and it decides how long anyone stands outside.</p>
+        <WindChill />
+      </section>
+
       <section className="nm-wrap s-section s-safety">
-        <h2 className="s-h2"><span>03 /</span> Safety is the first shot</h2>
+        <h2 className="s-h2"><span>04 /</span> Safety is the first shot</h2>
         <ol>
           <li><strong>Recon</strong><span>We scout or source local knowledge before we quote.</span></li>
           <li><strong>Plan</strong><span>Risk assessment, abort criteria and rescue plan, signed before kit is packed.</span></li>
@@ -82,13 +89,13 @@ export default async function SpecHome() {
       </section>
 
       <section className="nm-wrap s-section">
-        <h2 className="s-h2"><span>04 /</span> Join a field crew</h2>
+        <h2 className="s-h2"><span>05 /</span> Join a field crew</h2>
         <OpeningList openings={openings} />
       </section>
 
       <section className="nm-wrap s-section s-book">
         <div>
-          <h2 className="s-h2"><span>05 /</span> {c.form.title}</h2>
+          <h2 className="s-h2"><span>06 /</span> {c.form.title}</h2>
           <p className="s-lede">{c.form.intro}</p>
         </div>
         <SiteForm action={submitForm} form={c.form.form} division={c.division} fields={c.form.fields} submitLabel={c.form.submit} successTitle={c.form.success} />

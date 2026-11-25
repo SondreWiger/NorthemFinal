@@ -57,3 +57,20 @@ body:has(.site-specprod) { background: #0f1214; }
 .s-book { display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; }
 @media (max-width: 860px) { .s-book { grid-template-columns: 1fr; } }
 .site-specprod .nm-field input, .site-specprod .nm-field textarea, .site-specprod .nm-field select { font-family: var(--font-mono); font-size: 14px; }
+
+/* --- motion + new bits --- */
+.s-radar { position: absolute; right: clamp(-80px, -4vw, 0px); top: 90px; width: clamp(220px, 34vw, 460px); height: auto; opacity: .55; z-index: 1; }
+@media (max-width: 760px) { .s-radar { opacity: .25; top: 60px; } }
+.s-hero h1 { position: relative; }
+.s-hero h1 span { display: inline-block; animation: s-shake 6s infinite; }
+@keyframes s-shake { 0%, 92%, 100% { transform: none; } 93% { transform: translate(-3px, 1px) skewX(-2deg); } 95% { transform: translate(3px, -1px) skewX(2deg); } 97% { transform: translate(-1px, 0); } }
+.s-readout .fx-clock { color: var(--accent-2); font-size: 12px; letter-spacing: .12em; }
+.s-readout .fx-clock-hint { display: none; }
+.s-batt b { font-weight: 400; animation: p-blink 2.4s steps(2) infinite; }
+.s-calc-lede { margin: -14px 0 24px; }
+.s-envs li { overflow: hidden; }
+.s-envs li .s-env-top svg { transition: transform .5s var(--ease); }
+.s-envs li:hover .s-env-top svg { transform: rotate(-12deg) scale(1.12); }
+.s-safety li { transition: border-color .25s, transform .25s var(--ease); } .s-safety li:hover { border-color: var(--accent); transform: translateY(-3px); }
+.nm-hazard { background-size: 40px 100%; animation: s-haz 1.6s linear infinite; }
+@keyframes s-haz { to { background-position: 40px 0; } }

@@ -3,7 +3,7 @@ import type { SiteKey } from '@northem/core/types';
 import { siteUrl, env } from '@northem/core/env';
 import { isDemo } from '@northem/core/queries';
 import { NorthemMark } from '@northem/ui/micro';
-import { DemoBanner } from '@northem/ui/public';
+import { DemoBanner, SiteFx } from '@northem/ui/public';
 import { SITE_CONFIG } from './sites';
 import './shell.css';
 
@@ -51,6 +51,7 @@ export function SiteShell({ site, children, logo }: { site: SiteKey; children: R
         <p className="site-foot-legal">© {year} Northem · Made in the north, with perfect imperfections.</p>
       </footer>
       <DemoBanner show={isDemo} />
+      <SiteFx />
     </div>
   );
 }

@@ -1,11 +1,20 @@
 import { getDivisions, listOpenings, listPeople, listProjects } from '@northem/core/queries';
-import { Grain, Slate, Sprockets } from '@northem/ui/micro';
-import { Avatar, OpeningList, ProjectGrid } from '@northem/ui/public';
+import { Daylight, Grain, Slate, Sprockets } from '@northem/ui/micro';
+import { Avatar, ClapSlate, OpeningList, ProjectGrid, Timecode } from '@northem/ui/public';
 import { SiteForm } from '@northem/ui/forms';
 import { submitForm } from '@/actions';
 import { SITE_CONFIG } from '@/sites';
 
 export const revalidate = 60;
+
+const DAY = [
+  ['04:10', 'Call time', 'Coffee in the van. Nobody talks yet.'],
+  ['05:30', 'First light (almost)', 'We roll on the walk in. The best stuff happens before people remember the camera.'],
+  ['09:00', 'Interview', 'One light, one chair, no list of questions.'],
+  ['12:40', 'Lunch with the subject', 'Camera off. This is where we learn what the film is about.'],
+  ['15:10', 'Light is gone', 'Hands, windows, kettles. Close-ups by lamp light.'],
+  ['22:00', 'Dailies', 'We watch everything. Keep the mistakes. Plan tomorrow.'],
+];
 
 const BELIEFS = [
   ['No narrator', 'If someone has to explain the person, we filmed them wrong.'],
@@ -22,8 +31,9 @@ export default async function ProdHome() {
       <section className="p-hero">
         <Sprockets count={60} className="p-sprockets" />
         <Grain opacity={0.16} />
+        <div className="p-viewfinder" aria-hidden><i /><i /><i /><i /><span className="p-vf-read">ISO 800 · 1/50 · f/2.8 · 3200K</span><span className="p-vf-bat">▮▮▮▯</span></div>
         <div className="nm-wrap p-hero-inner">
-          <p className="nm-kicker p-reel"><span className="p-rec" /> REC · Reel 01 · Northem Productions</p>
+          <p className="nm-kicker p-reel"><span className="p-rec" /> REC <Timecode className="p-tc" /> · Reel 01 · Northem Productions</p>
           <h1>The parts of people <em>nobody films.</em></h1>
           <p className="p-lede">Documentaries, films and commercials about bakers at four in the morning, fishermen selling their boats, and towns with forty people left. Real people, no narrator, mistakes included.</p>
           <div className="p-cta">
@@ -39,7 +49,7 @@ export default async function ProdHome() {
 
       {now ? (
         <a className="p-now nm-wrap" href={`/p/${now.slug}`}>
-          <Slate className="p-now-slate" />
+          <ClapSlate className="p-now-slate"><Slate /></ClapSlate>
           <span className="nm-kicker">Now on the slate</span>
           <strong>{now.title}</strong>
           <span>{now.logline}</span>
@@ -49,6 +59,21 @@ export default async function ProdHome() {
       <section className="nm-wrap p-section">
         <h2 className="p-h2">The films</h2>
         <ProjectGrid projects={projects} divisions={divisions} site="prod" />
+      </section>
+
+      <section className="nm-wrap p-section">
+        <h2 className="p-h2">A day on set</h2>
+        <ol className="p-day">
+          {DAY.map(([t, h, d]) => <li key={t}><time>{t}</time><strong>{h}</strong><p>{d}</p></li>)}
+        </ol>
+      </section>
+
+      <section className="nm-wrap p-section p-light">
+        <div>
+          <h2 className="p-h2">We chase the light</h2>
+          <p className="p-lede">In December Oslo gets about six hours of daylight. In June it barely gets dark. Every shoot is planned around this line, and the films look the way they do because of it.</p>
+        </div>
+        <Daylight className="p-daylight" />
       </section>
 
       <section className="nm-wrap p-section p-beliefs">

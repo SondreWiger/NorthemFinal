@@ -1,7 +1,7 @@
 import { getDivisions, listPeople, listPodcasts, listProjects } from '@northem/core/queries';
 import { siteUrl } from '@northem/core/env';
-import { Aurora, Blueprint, Compass, Crystal, Grain, Slate, Sprockets, Sticker, Telemetry, Topo } from '@northem/ui/micro';
-import { Avatar, PodcastList, ProjectGrid } from '@northem/ui/public';
+import { Aurora, Blueprint, Compass, Crystal, Daylight, Grain, Radar, Slate, Sprockets, StarField, Sticker, Telemetry, Topo } from '@northem/ui/micro';
+import { Avatar, ClapSlate, LocalClock, PodcastList, ProjectGrid } from '@northem/ui/public';
 import { SiteForm } from '@northem/ui/forms';
 import { submitForm } from '@/actions';
 import { SITE_CONFIG } from '@/sites';
@@ -11,7 +11,7 @@ export const revalidate = 60;
 const DOORS = [
   { site: 'prod' as const, slug: 'productions', name: 'Productions', line: 'Films, documentaries and ads about the parts of people nobody films.', art: <Sprockets count={16} className="door-art door-sprockets" /> },
   { site: 'dev' as const, slug: 'development', name: 'Development', line: 'Websites, apps and tools. Many of them for people who make films.', art: <Blueprint className="door-art" /> },
-  { site: 'specprod' as const, slug: 'specprod', name: 'Specprod', line: 'Storms, volcanoes, glaciers, minus thirty. Shots from places cameras should not go.', art: <div className="door-art door-spec"><Crystal size={64} /><Telemetry label="LIVE" /></div> },
+  { site: 'specprod' as const, slug: 'specprod', name: 'Specprod', line: 'Storms, volcanoes, glaciers, minus thirty. Shots from places cameras should not go.', art: <div className="door-art door-spec"><Radar seed="door" className="door-radar" /><Crystal size={44} /><Telemetry label="LIVE" /></div> },
   { site: 'so' as const, slug: 'sonorthem', name: 'SoNorthem', line: 'Social-first series and channels that people actually follow.', art: <div className="door-art door-so"><Sticker tilt={-8}>for you ✦</Sticker><Sticker tilt={6} color="#ff3d7f">+12k</Sticker></div> },
 ];
 
@@ -30,14 +30,16 @@ export default async function Home() {
   return (
     <>
       <section className="l-hero">
+        <StarField seed="northem-sky" className="l-hero-stars" />
         <Topo seed="northem" className="l-hero-topo" />
         <Aurora className="l-hero-aurora" />
         <Grain opacity={0.09} />
         <div className="l-hero-inner nm-wrap">
-          <p className="l-coords nm-kicker"><span>59.91° N</span><span>10.75° E</span><span>Oslo, and further north</span></p>
+          <p className="l-coords nm-kicker"><span>59.91° N</span><span>10.75° E</span><LocalClock /></p>
           <h1 className="l-word" aria-label="Northem">
-            <Slate className="l-slate" />
-            <span>NORTH</span><span className="l-em">EM</span>
+            <ClapSlate className="l-slate"><Slate /></ClapSlate>
+            {'NORTH'.split('').map((ch, i) => <span key={i} className="l-letter" style={{ ['--i' as string]: i }}>{ch}</span>)}
+            <span className="l-em">{'EM'.split('').map((ch, i) => <span key={i} className="l-letter" style={{ ['--i' as string]: i + 5 }}>{ch}</span>)}</span>
           </h1>
           <p className="l-tag">Perfect imperfections.</p>
           <p className="l-lede">We make films about the people at the edge of the frame, build tools that get out of the way, shoot where cameras freeze, and make social people actually watch.</p>
@@ -47,16 +49,31 @@ export default async function Home() {
           </div>
           <Compass className="l-compass" />
         </div>
+        <a href="#houses" className="l-scroll" aria-label="Scroll to the four houses"><span /></a>
+      </section>
+
+      <section className="l-band" aria-label="Northem in numbers">
+        <div className="nm-wrap l-band-inner">
+          <ul className="l-numbers">
+            <li><strong data-count={String(projects.length)}>{projects.length}</strong><span>projects on this page</span></li>
+            <li><strong data-count={String(people.length)}>{people.length}</strong><span>people in the credits</span></li>
+            <li><strong data-count="4">4</strong><span>houses, one north</span></li>
+            <li><strong data-count="−31 °C">−31 °C</strong><span>coldest shoot so far</span></li>
+          </ul>
+          <Daylight className="l-daylight" />
+        </div>
       </section>
 
       <section className="l-doors nm-wrap" aria-labelledby="houses">
         <h2 id="houses" className="l-h2"><span className="nm-kicker">01</span> Four houses, one north</h2>
+        <p className="l-h2-sub">Each house has its own look, its own crew and its own front door. Same values underneath: show up, stay longer, keep the mistakes.</p>
         <ul>
           {DOORS.map((d, i) => {
             const div = divisions.find((x) => x.slug === d.slug);
             return (
               <li key={d.site}>
                 <a href={siteUrl(d.site, '/')} className={`door door-${d.site}`} style={{ ['--i' as string]: i }}>
+                  <span className="door-num nm-kicker">0{i + 1} / 04</span>
                   {d.art}
                   <span className="door-name">{div?.name ?? d.name}</span>
                   <span className="door-line">{div?.tagline ?? d.line}</span>

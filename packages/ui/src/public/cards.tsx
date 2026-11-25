@@ -1,6 +1,7 @@
 import type { Division, Opening, Project, SiteKey } from '@northem/core/types';
 import { KIND_LABEL, STATUS_LABEL } from '@northem/core/format';
 import { Poster } from '../poster';
+import { FocusMarks } from '../micro';
 import { projectHref } from './links';
 
 export function ProjectGrid({ projects, divisions, site, variant = 'posters' }: { projects: Project[]; divisions: Division[]; site: SiteKey; variant?: 'posters' | 'list' | 'frames' }) {
@@ -10,7 +11,10 @@ export function ProjectGrid({ projects, divisions, site, variant = 'posters' }: 
       {projects.map((p, i) => (
         <li key={p.id} style={{ ['--i' as string]: i }}>
           <a href={projectHref(p, divisions, site)} className="nm-pcard">
-            <Poster title={p.title} seed={p.id} kind={p.kind} src={p.poster_url} year={p.year} hint={`${p.locations.join(' ')} ${p.theme_overrides?.texture ?? ''}`} />
+            <span className="nm-pcard-art">
+              <Poster title={p.title} seed={p.id} kind={p.kind} src={p.poster_url} year={p.year} hint={`${p.locations.join(' ')} ${p.theme_overrides?.texture ?? ''}`} />
+              <FocusMarks />
+            </span>
             <span className="nm-pcard-meta">
               <strong>{p.title}</strong>
               <small>{KIND_LABEL[p.kind]}{p.year ? ` · ${p.year}` : ''}{['released', 'live'].includes(p.status) ? '' : ` · ${STATUS_LABEL[p.status]}`}</small>

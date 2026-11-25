@@ -46,3 +46,24 @@ body:has(.site-dev) { background: #0a101c; }
 .d-brief { display: grid; grid-template-columns: 1fr 1.4fr; gap: 40px; }
 @media (max-width: 860px) { .d-brief { grid-template-columns: 1fr; } }
 .d-code { font-family: var(--font-mono); font-size: 13px; color: var(--accent); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; overflow-x: auto; }
+
+/* --- motion + new bits --- */
+.d-hero-side { display: flex; flex-direction: column; gap: 12px; }
+.d-status { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; background: color-mix(in srgb, var(--surface) 70%, transparent); display: flex; flex-direction: column; gap: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.d-status-head { display: flex; align-items: center; gap: 8px; } .d-status-head small { margin-left: auto; }
+.d-status-head i { width: 8px; height: 8px; border-radius: 50%; background: #28c840; box-shadow: 0 0 0 0 #28c840; animation: nm-ping 2s infinite; --accent: #28c840; }
+.d-uptime { display: grid; grid-template-columns: repeat(90, 1fr); gap: 2px; height: 22px; }
+.d-uptime b { background: #28c840; opacity: .75; border-radius: 1px; transition: transform .15s, opacity .15s; transform-origin: bottom; }
+.d-uptime b:hover { opacity: 1; transform: scaleY(1.25); }
+.d-uptime b.d-blip { background: #febc2e; }
+.d-stack li { transition: color .2s, border-color .2s, transform .2s var(--ease); animation: d-in .5s var(--ease) both; animation-delay: calc(var(--i) * 60ms + 600ms); }
+.d-stack li:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-2px); }
+@keyframes d-in { from { opacity: 0; transform: translateY(8px); } }
+.d-grid { animation: d-pan 40s linear infinite; }
+@keyframes d-pan { to { background-position: 32px 32px, 32px 32px; } }
+.d-shell { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center; }
+@media (max-width: 900px) { .d-shell { grid-template-columns: 1fr; } }
+.d-steps li { position: relative; overflow: hidden; }
+.d-steps li::after { content: ''; position: absolute; left: 0; top: 0; height: 2px; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .4s var(--ease); }
+.d-steps li:hover::after { transform: scaleX(1); }
+.site-dev .fx-chip, .site-dev .nm-chip { font-family: var(--font-mono); font-size: 13px; }

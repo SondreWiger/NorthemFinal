@@ -1,6 +1,7 @@
 import { getDivisions, listOpenings, listProjects } from '@northem/core/queries';
 import { Blueprint } from '@northem/ui/micro';
-import { OpeningList, ProjectGrid } from '@northem/ui/public';
+import { OpeningList, ProjectGrid, ScopeToy, Terminal } from '@northem/ui/public';
+import { rng } from '@northem/ui/micro';
 import { SiteForm } from '@northem/ui/forms';
 import { submitForm } from '@/actions';
 import { SITE_CONFIG } from '@/sites';
@@ -14,7 +15,16 @@ const STEPS = [
   ['04', 'Stay', 'We keep it running, fast and secure after launch.'],
 ];
 
+const SCRIPT = [
+  { cmd: 'northem new client-portal --template next', out: ['✓ scaffolded 42 files', '✓ auth, roles and audit log wired', '→ preview: https://client-portal.vercel.app'] },
+  { cmd: 'npm test', out: ['PASS  rls.test.ts (38 checks)', 'PASS  ui.test.tsx (112 checks)', 'Tests: 150 passed, 0 failed'] },
+  { cmd: 'git push && northem ship', out: ['● building… 41s', '✓ deployed to production', '✓ lighthouse 99 / 100 / 100 / 100'] },
+];
+
 const STACK = ['TypeScript', 'Next.js', 'React', 'Swift', 'Postgres', 'Supabase', 'Electron', 'Metal', 'OpenCASCADE', 'Vercel'];
+
+const r = rng('uptime');
+const UPTIME = Array.from({ length: 90 }, () => r() > 0.03);
 
 export default async function DevHome() {
   const [divisions, projects, openings] = await Promise.all([getDivisions(), listProjects('development', 9), listOpenings('development')]);
@@ -35,16 +45,35 @@ export default async function DevHome() {
               <a className="nm-btn" href="/work">See products</a>
             </div>
           </div>
-          <Blueprint className="d-blueprint" />
+          <div className="d-hero-side">
+            <Blueprint className="d-blueprint" />
+            <div className="d-status" aria-label="Status of the things we run">
+              <span className="d-status-head"><i /> all systems normal <small>90 days</small></span>
+              <span className="d-uptime" aria-hidden>{UPTIME.map((u, i) => <b key={i} className={u ? '' : 'd-blip'} />)}</span>
+            </div>
+          </div>
         </div>
         <ul className="d-stack nm-wrap" aria-label="What we build with">
-          {STACK.map((s) => <li key={s}>{s}</li>)}
+          {STACK.map((s, i) => <li key={s} style={{ ['--i' as string]: i }}>{s}</li>)}
         </ul>
       </section>
 
       <section className="nm-wrap d-section">
         <h2 className="d-h2"><span>// </span>products & work <a href="/work">ls -a →</a></h2>
         <ProjectGrid projects={projects} divisions={divisions} site="dev" variant="frames" />
+      </section>
+
+      <section className="nm-wrap d-section d-shell">
+        <div>
+          <h2 className="d-h2"><span>// </span>ship it, then ship it again</h2>
+          <p className="d-lede">Every project gets previews on every change, tests that run on every push and a deploy you can undo in one click. You see the real thing from week one.</p>
+        </div>
+        <Terminal script={SCRIPT} title="~/northem — zsh" />
+      </section>
+
+      <section className="nm-wrap d-section">
+        <h2 className="d-h2"><span>// </span>size up your idea</h2>
+        <ScopeToy />
       </section>
 
       <section className="nm-wrap d-section">
