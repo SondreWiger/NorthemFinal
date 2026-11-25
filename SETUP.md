@@ -26,7 +26,7 @@ select o.id, u.id, 'owner' from orgs o, auth.users u
 where o.slug = 'northem' and u.email = 'YOUR EMAIL';
 ```
 
-From then on, everyone else is added from admin.northem.group → People (by email; new people get an invite mail).
+From then on, everyone else is added from admin.northem.group → Team & invites (by email; new people get an invite mail), or from a project's Team tab in the portal. If mail isn't set up yet, the invite link is shown once on screen so you can send it yourself.
 
 ## 2. Environment variables (Vercel)
 

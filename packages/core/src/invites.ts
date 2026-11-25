@@ -20,7 +20,7 @@ export interface AddPersonInput {
 }
 
 export type AddPersonResult =
-  | { ok: true; mode: 'added' | 'invited'; mailed: boolean }
+  | { ok: true; mode: 'added' | 'invited'; mailed: boolean; link?: string }
   | { ok: false; error: string };
 
 const INVITE_DAYS = 14;
@@ -100,5 +100,6 @@ export async function addPersonByEmail(s: Session, input: AddPersonInput): Promi
   await admin.from('audit_log').insert({ org_id: s.org.id, actor_id: s.userId, action: 'invite.sent', target_table: 'invites', detail: { email, project_id: input.projectId ?? null } });
   const mail = inviteMail({ brand, inviter, project: projectTitle, role: roleLabel, url: `${env.portalUrl}/invite/${token}`, message: input.message, expiresDays: INVITE_DAYS });
   const sent = await sendMail({ to: email, ...mail });
-  return { ok: true, mode: 'invited', mailed: sent.ok };
+  // Without mail the inviter needs the link once, to send it themselves.
+  return { ok: true, mode: 'invited', mailed: sent.ok, link: sent.ok ? undefined : `${env.portalUrl}/invite/${token}` };
 }
