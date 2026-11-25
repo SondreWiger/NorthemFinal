@@ -38,7 +38,8 @@ end $$;
 -- Director creates a private film.
 set request.jwt.claim.sub = '00000000-0000-0000-0000-00000000000d';
 insert into projects (org_id, division_id, slug, title, kind)
-select o.id, d.id, 'white-silence', 'White Silence', 'feature' from orgs o join divisions d on d.org_id = o.id and d.slug = 'specprod';
+select o.id, d.id, 'white-silence', 'White Silence', 'feature' from orgs o join divisions d on d.org_id = o.id and d.slug = 'specprod'
+returning id; -- the apps read the new row back in the same statement
 select pg_temp.expect('director is lead', (select count(*) from project_members where role = 'lead'), 1);
 select pg_temp.expect('project channel created', (select count(*) from chat_channels where kind = 'project'), 1);
 do $$ begin
