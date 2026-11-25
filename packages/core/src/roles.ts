@@ -58,8 +58,28 @@ export const PERMISSIONS = [
 ] as const;
 export type Permission = (typeof PERMISSIONS)[number]['key'];
 
-export const DEPARTMENTS = [
-  'directing', 'producing', 'writing', 'cast', 'camera', 'lighting', 'grip', 'sound', 'art',
-  'costume', 'makeup', 'locations', 'production', 'safety', 'drone', 'post', 'vfx', 'music',
-  'design', 'engineering', 'product', 'social', 'marketing',
+/** Departments, grouped by the kind of work. Groups only shape the pickers; the stored value is the key. */
+export const DEPARTMENT_GROUPS = [
+  { key: 'film', label: 'Film and production', items: [
+    'directing', 'producing', 'writing', 'cast', 'camera', 'lighting', 'grip', 'sound', 'art',
+    'costume', 'makeup', 'locations', 'production', 'post', 'vfx', 'music'] },
+  { key: 'specprod', label: 'Specialty shoots', items: ['drone', 'rigging', 'stunts', 'underwater', 'safety'] },
+  { key: 'dev', label: 'Development', items: [
+    'product', 'design', 'engineering', 'frontend', 'backend', 'mobile', 'devops', 'qa', 'data', 'security', 'support'] },
+  { key: 'social', label: 'Social and marketing', items: ['social', 'content', 'community', 'marketing', 'partnerships'] },
 ] as const;
+
+export const DEPARTMENTS = DEPARTMENT_GROUPS.flatMap((g) => g.items);
+export type Department = (typeof DEPARTMENTS)[number];
+
+const DEPT_NAMES: Record<string, string> = {
+  vfx: 'VFX', qa: 'QA / testing', devops: 'DevOps', ux: 'UX', post: 'Post-production', mobile: 'Mobile apps',
+  frontend: 'Frontend', backend: 'Backend', data: 'Data', support: 'Customer support',
+};
+/** "camera" -> "Camera", "qa" -> "QA / testing". */
+export const deptLabel = (d: string) => DEPT_NAMES[d] ?? d.charAt(0).toUpperCase() + d.slice(1);
+
+/** Which department group a division's people mostly come from, so pickers can show it first. */
+export function deptGroupForDivision(slug?: string | null): string | undefined {
+  return ({ productions: 'film', development: 'dev', specprod: 'specprod', sonorthem: 'social', so: 'social' } as Record<string, string>)[slug ?? ''];
+}

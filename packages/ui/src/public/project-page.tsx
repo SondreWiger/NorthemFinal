@@ -1,6 +1,7 @@
 import type { Division, PageBlock, PodcastEpisode, ProjectBundle, SiteKey } from '@northem/core/types';
 import { KIND_LABEL, STATUS_LABEL, dateLabel, duration, embedUrl } from '@northem/core/format';
 import { publicFileUrl } from '@northem/core/queries';
+import { DEPARTMENTS, deptLabel } from '@northem/core/roles';
 import { Poster } from '../poster';
 import { Grain, Waveform, CropMarks } from '../micro';
 import { DEFAULT_BLOCKS, SITE_THEMES, scopeCss, themeData, themeStyle } from '../theme';
@@ -8,7 +9,7 @@ import { Avatar } from './avatar';
 import { Gallery, TriviaDeck } from './interactive';
 import { personHref } from './links';
 
-const DEPT_ORDER = ['directing', 'writing', 'producing', 'cast', 'camera', 'drone', 'lighting', 'grip', 'sound', 'art', 'costume', 'makeup', 'locations', 'production', 'safety', 'post', 'vfx', 'music', 'design', 'engineering', 'product', 'social', 'marketing'];
+const DEPT_ORDER: string[] = ['directing', 'writing', 'producing', 'cast', ...DEPARTMENTS];
 const DEPT_LABEL: Record<string, string> = { directing: 'Directed by', writing: 'Written by', producing: 'Produced by', cast: 'Cast', camera: 'Camera', drone: 'Aerial', sound: 'Sound', post: 'Post-production', engineering: 'Engineering', design: 'Design' };
 
 /** A public project page: IMDb's skeleton, but showing the real side of the work. */
@@ -82,7 +83,7 @@ export function ProjectPage({ bundle, site, divisions }: { bundle: ProjectBundle
               <section key={id} id={id} className="nm-block nm-credits"><h2>{b.title ?? 'Who made it'}</h2>
                 {order.map((dept) => (
                   <div key={dept} className="nm-credit-group">
-                    <h3>{DEPT_LABEL[dept] ?? dept[0]!.toUpperCase() + dept.slice(1)}</h3>
+                    <h3>{DEPT_LABEL[dept] ?? deptLabel(dept)}</h3>
                     <ul>
                       {groups.get(dept)!.map((c) => (
                         <li key={c.id}>

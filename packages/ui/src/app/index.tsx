@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { initials } from '@northem/core/format';
+import { DEPARTMENT_GROUPS, deptLabel } from '@northem/core/roles';
 import { NorthemMark } from '../micro';
 import { rng } from '../micro';
 import { MobileBar, NavLinks, type NavItem } from './client';
@@ -70,4 +71,23 @@ export function Empty({ title, children }: { title: string; children?: ReactNode
 
 export function Notice({ kind, children }: { kind?: 'ok' | 'bad'; children: ReactNode }) {
   return <div className={`notice ${kind ? `notice-${kind}` : ''}`} role={kind === 'bad' ? 'alert' : 'status'}>{children}</div>;
+}
+
+/** Department checkboxes, grouped (film, specialty shoots, development, social). `first` puts a group on top. */
+export function DeptPicker({ name = 'departments', selected = [], first }: { name?: string; selected?: readonly string[]; first?: string }) {
+  const groups = [...DEPARTMENT_GROUPS].sort((a, b) => Number(b.key === first) - Number(a.key === first));
+  return (
+    <div className="dept-picker">
+      {groups.map((g) => (
+        <fieldset key={g.key} className="dept-group">
+          <legend>{g.label}</legend>
+          <div className="row">
+            {g.items.map((d) => (
+              <label key={d} className="check small"><input type="checkbox" name={name} value={d} defaultChecked={selected.includes(d)} />{deptLabel(d)}</label>
+            ))}
+          </div>
+        </fieldset>
+      ))}
+    </div>
+  );
 }

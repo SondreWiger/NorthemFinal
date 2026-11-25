@@ -4,12 +4,12 @@ import { requireMember } from '@northem/core/session';
 import { supabaseServer } from '@northem/core/supabase/server';
 import { env, siteForDivisionSlug, siteUrl } from '@northem/core/env';
 import { KIND_LABEL, STATUS_LABEL, dateLabel, timeAgo } from '@northem/core/format';
-import { DEPARTMENTS, ORG_ROLE_LABEL, PROJECT_ROLE_LABEL, projectRoleAtLeast } from '@northem/core/roles';
+import { deptGroupForDivision, ORG_ROLE_LABEL, PROJECT_ROLE_LABEL, projectRoleAtLeast } from '@northem/core/roles';
 import { publicFileUrl } from '@northem/core/queries';
 import { PROJECT_ROLES, type DocumentRow, type Media, type Moment, type Person, type Project, type ProjectLink, type ProjectMember, type Trivia } from '@northem/core/types';
 import { Poster } from '@northem/ui/poster';
 import { MediaThumb } from '@northem/ui/public';
-import { ConfirmSubmit, Empty, Notice, PageHeader, Submit, UserAvatar } from '@northem/ui/app';
+import { ConfirmSubmit, DeptPicker, Empty, Notice, PageHeader, Submit, UserAvatar } from '@northem/ui/app';
 import { profilesById, projectRole } from '@/data';
 import * as A from './actions';
 import { ScriptsTab, TasksTab } from './integrations';
@@ -199,7 +199,7 @@ async function Team({ project, members, profiles, isLead, orgRoleOptions }: { pr
               <select name="org_role" defaultValue="crew">{(['guest', 'press', 'cast', 'crew', 'producer'] as const).filter((r) => orgRoleOptions === 'owner' || r !== orgRoleOptions).map((r) => <option key={r} value={r}>{ORG_ROLE_LABEL[r]}</option>)}</select>
             </div>
             <div className="field wide"><label>Departments</label>
-              <div className="row">{DEPARTMENTS.map((d) => <label key={d} className="check small"><input type="checkbox" name="departments" value={d} />{d}</label>)}</div>
+              <DeptPicker first={deptGroupForDivision((project as { division?: { slug: string } | null }).division?.slug)} />
             </div>
             <div className="field"><label>Link to credited person</label>
               <select name="person_id" defaultValue=""><option value="">None</option>{((people as Pick<Person, 'id' | 'name'>[]) ?? []).map((pe) => <option key={pe.id} value={pe.id}>{pe.name}</option>)}</select>
@@ -244,7 +244,7 @@ async function Docs({ project, isHead, isLead, userId }: { project: Project; isH
               <select name="min_role" defaultValue="crew">{PROJECT_ROLES.map((r) => <option key={r} value={r}>{PROJECT_ROLE_LABEL[r]} and up</option>)}</select>
             </div>
             <div className="field"><label>Only these departments (optional)</label>
-              <div className="row">{DEPARTMENTS.map((d) => <label key={d} className="check small"><input type="checkbox" name="departments" value={d} />{d}</label>)}</div>
+              <DeptPicker first={deptGroupForDivision((project as { division?: { slug: string } | null }).division?.slug)} />
               <small>Leave empty for every department. Leads always see everything.</small>
             </div>
             <label className="check"><input type="checkbox" name="pinned" /> Pin to the top</label>

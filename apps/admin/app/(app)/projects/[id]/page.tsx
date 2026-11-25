@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { supabaseServer } from '@northem/core/supabase/server';
 import { env, siteForDivisionSlug, siteUrl } from '@northem/core/env';
-import { DEPARTMENTS, PROJECT_ROLE_LABEL } from '@northem/core/roles';
+import { DEPARTMENT_GROUPS, DEPARTMENTS, deptGroupForDivision, deptLabel, PROJECT_ROLE_LABEL } from '@northem/core/roles';
 import { KIND_LABEL, STATUS_LABEL } from '@northem/core/format';
 import { publicFileUrl } from '@northem/core/queries';
 import { PROJECT_KINDS, PROJECT_ROLES, PROJECT_STATUSES, type CreditView, type Division, type Media, type Moment, type Person, type Profile, type Project, type ProjectLink, type Theme, type Trivia } from '@northem/core/types';
@@ -52,7 +52,7 @@ export default async function ProjectAdmin(props: PageProps<'/projects/[id]'>) {
       <nav className="tabs">{TABS.map(([k, l]) => <a key={k} href={`/projects/${id}?tab=${k}`} aria-current={tab === k ? 'page' : undefined}>{l}</a>)}</nav>
       {tab === 'details' ? <Details project={project} divisions={divisions} canDelete={s.atLeast('admin') || s.can('projects.manage_all')} />
         : tab === 'page' ? <PageTab project={project} site={site} orgId={s.org.id} />
-          : tab === 'credits' ? <Credits project={project} orgId={s.org.id} />
+          : tab === 'credits' ? <Credits project={project} orgId={s.org.id} divSlug={division?.slug} />
             : tab === 'public' ? <PublicTab project={project} />
               : <Links project={project} />}
     </>
@@ -154,7 +154,7 @@ async function PageTab({ project: p, site, orgId }: { project: Project; site: ke
   );
 }
 
-async function Credits({ project: p, orgId }: { project: Project; orgId: string }) {
+async function Credits({ project: p, orgId, divSlug }: { project: Project; orgId: string; divSlug?: string }) {
   const db = await supabaseServer();
   const [{ data: cr }, { data: ppl }, { data: mem }] = await Promise.all([
     db.from('credits').select('*, person:people(id, slug, name, photo_url, known_for, profile_id)').eq('project_id', p.id).order('billing'),
@@ -183,7 +183,7 @@ async function Credits({ project: p, orgId }: { project: Project; orgId: string 
           </div>
           <div className="field"><label>…or someone new</label><input name="new_name" placeholder="Full name" /></div>
           <div className="field"><label>Job</label><input name="job" required placeholder="Director of photography" /></div>
-          <div className="field"><label>Department</label><select name="department" defaultValue="camera">{DEPARTMENTS.map((d) => <option key={d}>{d}</option>)}</select></div>
+          <div className="field"><label>Department</label><select name="department" defaultValue={deptGroupForDivision(divSlug) === 'dev' ? 'engineering' : 'camera'}><DeptOptions /></select></div>
           <div className="field"><label>Character (cast)</label><input name="character_name" /></div>
           <div className="field"><label>Order</label><input name="billing" type="number" defaultValue={100} /><small>Lower comes first.</small></div>
           <div className="field"><label>Note</label><input name="note" placeholder="uncredited, episodes 1–3…" /></div>
@@ -203,7 +203,7 @@ async function Credits({ project: p, orgId }: { project: Project; orgId: string 
                   <tr key={c.id}>
                     <td><a href={`/credits/${c.person.id}`}>{c.person.name}</a>{c.person.profile_id ? ' ●' : ''}</td>
                     <td><input form={f} name="job" defaultValue={c.job} /></td>
-                    <td><select form={f} name="department" defaultValue={c.department}>{[...new Set([...DEPARTMENTS, c.department])].map((d) => <option key={d}>{d}</option>)}</select></td>
+                    <td><select form={f} name="department" defaultValue={c.department}><DeptOptions extra={c.department} /></select></td>
                     <td><input form={f} name="character_name" defaultValue={c.character_name ?? ''} /></td>
                     <td><input form={f} name="billing" type="number" defaultValue={c.billing} style={{ width: 70 }} /></td>
                     <td><input form={f} type="checkbox" name="is_public" defaultChecked={c.is_public} aria-label="Public" /></td>
@@ -338,5 +338,20 @@ async function Links({ project: p }: { project: Project }) {
         </form>
       </section>
     </div>
+  );
+}
+
+/** Department options grouped like the pickers; `extra` keeps an older value that is not in the list. */
+function DeptOptions({ extra }: { extra?: string }) {
+  return (
+    <>
+      {extra && !(DEPARTMENTS as readonly string[]).includes(extra) ? <option value={extra}>{extra}</option> : null}
+      <option value="cast">Cast</option>
+      {DEPARTMENT_GROUPS.map((g) => (
+        <optgroup key={g.key} label={g.label}>
+          {g.items.filter((d) => d !== 'cast').map((d) => <option key={d} value={d}>{deptLabel(d)}</option>)}
+        </optgroup>
+      ))}
+    </>
   );
 }

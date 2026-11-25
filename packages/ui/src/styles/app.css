@@ -183,3 +183,10 @@ table.table { width: 100%; border-collapse: collapse; }
 .block-row + .block-row { margin-top: 6px; }
 .app-mobile-only { display: none; }
 @media (max-width: 860px) { .app-side-desktop { display: none; } .app-mobile-only { display: block; } }
+
+/* Department picker: one small labelled group per kind of work. */
+.dept-picker { display: grid; gap: 10px; }
+.dept-group { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px 12px; margin: 0; min-width: 0; }
+.dept-group legend { padding: 0 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+.dept-group .row { gap: 6px 14px; }
+@media (min-width: 900px) { .dept-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

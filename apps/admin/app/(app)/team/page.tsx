@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { supabaseServer } from '@northem/core/supabase/server';
-import { DEPARTMENTS, ORG_ROLE_HINT, ORG_ROLE_LABEL } from '@northem/core/roles';
+import { ORG_ROLE_HINT, ORG_ROLE_LABEL } from '@northem/core/roles';
 import { dateLabel, timeAgo } from '@northem/core/format';
 import { ORG_ROLES, type Invite, type OrgMember, type OrgRole, type Profile } from '@northem/core/types';
-import { ConfirmSubmit, Empty, Notice, PageHeader, Submit, UserAvatar } from '@northem/ui/app';
+import { ConfirmSubmit, DeptPicker, Empty, Notice, PageHeader, Submit, UserAvatar } from '@northem/ui/app';
 import { requireAdmin } from '@/guard';
 import { invite, revokeInvite, updateMember } from './actions';
 
@@ -42,7 +42,7 @@ export default async function Team(props: PageProps<'/team'>) {
             </div>
             <div className="field"><label>Title</label><input name="title" placeholder="Producer, Editor, Press contact" /></div>
             <div className="field"><label>Note in the mail</label><input name="message" maxLength={600} /></div>
-            <div className="field wide"><label>Departments</label><div className="row">{DEPARTMENTS.map((d) => <label key={d} className="check small"><input type="checkbox" name="departments" value={d} />{d}</label>)}</div></div>
+            <div className="field wide"><label>Departments</label><DeptPicker /></div>
             <div className="wide"><Submit pendingText="Sending…">Send invite</Submit></div>
           </form>
           <details style={{ marginTop: 12 }}><summary className="small muted">What each role can do</summary>
