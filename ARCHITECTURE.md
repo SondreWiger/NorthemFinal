@@ -1,31 +1,31 @@
 # Northem platform — architecture
 
-One Turborepo monorepo, deployed to Vercel as seven projects, on one Supabase project, mail via Resend.
+One Turborepo monorepo (pnpm workspaces), deployed to Vercel as three projects, on one Supabase project, mail via Resend.
 
 ## Apps
 
-| App | Host | Feel | What it does |
-| --- | --- | --- | --- |
-| `apps/landing` | northem.group | Calm, northern, confident. Dark sky, aurora accents, the four divisions as doors. | Story, divisions, featured work, people, podcast, "reach out" hub, Northem Pro licence page. |
-| `apps/prod` | prod.northem.group | Raw and human. Film grain, warm tungsten, handwritten notes, faces first. | Productions slate, IMDb-style project pages, people, openings, pitch an idea. |
-| `apps/dev` | dev.northem.group | Precise and playful. Blueprint grid, mono type, live code-ish micrographics. | Products and client work, case studies, "start a project" brief form, tools to try. |
-| `apps/specprod` | specprod.northem.group | Gritty and extreme. Storm grey, frost, ash, hazard orange, weather telemetry HUD. | Extreme-environment showreel, capabilities (cold, volcano, storm, aerial), "book a shoot" form. |
-| `apps/so` | so.northem.group | Loud and fast. Bold colour blocks, stickers, vertical-video frames. | Social work, formats, results, "grow with us" form. |
-| `apps/portal` | portal.northem.group | Calm work tool, org-branded (whitelabel). | Projects, documents (incl. Screenplay Studio + Graphite), chat, people, profile editor, notifications, invites. |
-| `apps/admin` | admin.northem.group | Dense control room. | Orgs, divisions, domains, roles & permissions, people, invites, inbox (forms/applications), openings, projects + public page/theme builder, podcasts, press kits, audit log. |
+| App | Hosts | What it does |
+| --- | --- | --- |
+| `apps/web` | northem.group, prod., dev., specprod., so. | All five public sites in one Next.js app. `proxy.ts` maps the host to a folder (`app/landing`, `app/prod`, `app/dev`, `app/specprod`, `app/so`), each with its own layout, stylesheet, fonts and micrographics. Locally or on preview URLs, `?site=prod` switches site. |
+| `apps/portal` | portal.northem.group | Employee web app: dashboard, projects (documents gated by role and department, photos, bloopers, trivia, diary, Screenplay Studio scripts, Graphite tasks), realtime chat (channels, DMs, groups, threads, reactions, files), people, profile with tool connections, notifications, press room, invite acceptance. Org-branded for whitelabel. |
+| `apps/admin` | admin.northem.group | Control room: inbox for every form (status, notes, mail replies), team and invites, roles and permission matrix, projects (details, publish, credits, public media and trivia, linked tools), hand-built public page builder with live preview, themes, credited people pages, podcasts, jobs and casting calls, press kits, divisions, branding and domains, audit log. |
 
-Public project pages render in the division app that owns them (`prod.northem.group/p/white-silence`) with the project's own theme; people pages at `/people/<slug>` show their credits, tagged photos, bloopers and podcast appearances.
+| Site | Feel |
+| --- | --- |
+| Landing | Calm, northern, confident. Dark sky, aurora, compass and topo lines; the four divisions as doors. |
+| Productions | Raw and human. Film grain, warm tungsten, slates and sprocket holes. |
+| Development | Precise and playful. Blueprint grid, mono type, telemetry. |
+| Specprod | Gritty and extreme. Storm grey, frost, ash, hazard orange, weather HUD. |
+| SoNorthem | Loud and fast. Cream and hot pink, stickers, chunky shadows. |
+
+Public project pages render on the division site that owns them (`prod.northem.group/p/<slug>`, `northem.group/work/<slug>` for projects without a division) with the project's own look: site theme, then an optional saved theme, then per-project tokens, section order and scoped custom CSS from the admin page builder. People pages (`/people/<slug>`) list every credit, IMDb style.
 
 ## Shared packages
 
-- `packages/db`: Supabase migrations (this folder), generated types, typed queries.
-- `packages/auth`: Supabase SSR clients, session cookie on `.northem.group` so one sign-in covers portal and admin, role helpers mirroring the SQL.
-- `packages/ui`: primitives (buttons, forms, dialogs) themed by CSS variables, so each app and each project page can restyle them.
-- `packages/micro`: SVG micrographics and motion bits (grain, weather HUD, blueprint, aurora, stickers).
-- `packages/mail`: Resend client + React Email templates (invite, added to project, form receipt, new submission alert).
-- `packages/integrations`: Screenplay Studio and Graphite clients. Both are separate Supabase projects; we call their MCP/API with each person's own token (`sps_...` for SPS, Graphite personal token), stored encrypted in `user_connections`. The portal therefore never shows more than the person could see in those apps.
-- `packages/themes`: project/division theme schema (zod), presets, and the renderer for hand-built page blocks.
-- `packages/config`: tsconfig, eslint, tailwind preset (loosely from the Northem brand kit).
+- `packages/core`: types, role helpers mirroring the SQL, env, Supabase clients (server, browser, service role, proxy session refresh with the cookie on `.northem.group` so one sign-in covers portal and admin), session/permission guards, public queries with demo fallback, Resend mail templates, public form handling (honeypot, timing, rate limit), invites, encrypted tool connections and the Screenplay Studio / Graphite MCP clients.
+- `packages/ui`: micrographics (pure SVG), generated posters, theme tokens and CSS scoping, public page components (project page, person page, galleries, trivia deck, podcasts), form components, and the portal/admin shell. Styles in `styles/public.css` and `styles/app.css`.
+
+The portal is built so a native app can follow: all access rules live in Postgres (RLS), the browser client already handles realtime and uploads, and a `devices` table is ready for push tokens.
 
 ## Data and access (Supabase)
 

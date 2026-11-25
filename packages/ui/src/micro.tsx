@@ -69,7 +69,7 @@ export function Aurora({ className, style }: P) {
         <linearGradient id="nm-au1" x1="0" x2="0" y1="0" y2="1">
           <stop offset="0" stopColor="var(--aurora-1, #3cf0b4)" stopOpacity="0" />
           <stop offset=".55" stopColor="var(--aurora-1, #3cf0b4)" stopOpacity=".35" />
-          <stop offset="1" stopColor="var(--aurora-2, #7a5cff)" stopOpacity="0" />
+          <stop offset=".85" stopColor="var(--aurora-2, #7a5cff)" stopOpacity="0" />
         </linearGradient>
         <filter id="nm-blur"><feGaussianBlur stdDeviation="18" /></filter>
       </defs>
@@ -205,6 +205,79 @@ export function NorthemMark({ className, style, title = 'Northem' }: P) {
     <svg viewBox="0 0 48 48" className={className} style={style} role="img" aria-label={title}>
       <path d="M6 40 L6 12 L24 34 L24 8 L42 30 L42 40" fill="none" stroke="currentColor" strokeWidth="4.5" strokeLinejoin="miter" strokeLinecap="square" />
       <path d="M38 4 l1.6 4.4 l4.4 1.6 l-4.4 1.6 l-1.6 4.4 l-1.6 -4.4 l-4.4 -1.6 l4.4 -1.6z" fill="var(--accent, #ff5a1f)" />
+    </svg>
+  );
+}
+
+/** Radar sweep with seeded blips (Specprod weather radar). */
+export function Radar({ seed = 'radar', className, style }: P & { seed?: string }) {
+  const r = rng(seed);
+  const blips = Array.from({ length: 7 }, () => {
+    const a = r() * Math.PI * 2, d = 18 + r() * 70;
+    return { x: 100 + Math.cos(a) * d, y: 100 + Math.sin(a) * d, s: 1.5 + r() * 2.5, delay: (((a / (Math.PI * 2)) * 4) % 4).toFixed(2) };
+  });
+  return (
+    <svg viewBox="0 0 200 200" className={`nm-radar ${className ?? ''}`} style={style} aria-hidden>
+      <defs>
+        <radialGradient id="nm-rad-bg"><stop offset="0" stopColor="currentColor" stopOpacity=".08" /><stop offset="1" stopColor="currentColor" stopOpacity="0" /></radialGradient>
+        <linearGradient id="nm-rad-sweep" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stopColor="currentColor" stopOpacity="0" /><stop offset="1" stopColor="currentColor" stopOpacity=".45" /></linearGradient>
+      </defs>
+      <circle cx="100" cy="100" r="96" fill="url(#nm-rad-bg)" stroke="currentColor" strokeOpacity=".4" />
+      {[24, 48, 72].map((k) => <circle key={k} cx="100" cy="100" r={k} fill="none" stroke="currentColor" strokeOpacity=".18" strokeDasharray="2 3" />)}
+      <line x1="4" y1="100" x2="196" y2="100" stroke="currentColor" strokeOpacity=".15" /><line x1="100" y1="4" x2="100" y2="196" stroke="currentColor" strokeOpacity=".15" />
+      <g className="nm-radar-sweep"><path d="M100 100 L196 100 A96 96 0 0 0 167.9 32.1 Z" fill="url(#nm-rad-sweep)" /></g>
+      {blips.map((b, i) => <circle key={i} cx={b.x.toFixed(1)} cy={b.y.toFixed(1)} r={b.s.toFixed(1)} fill="var(--accent, #ff5a1f)" className="nm-radar-blip" style={{ animationDelay: `${b.delay}s` }} />)}
+    </svg>
+  );
+}
+
+/** A field of seeded, twinkling stars with the pole star brightest. */
+export function StarField({ seed = 'stars', count = 70, className, style }: P & { seed?: string; count?: number }) {
+  const r = rng(seed);
+  return (
+    <svg viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" className={`nm-stars ${className ?? ''}`} style={style} aria-hidden>
+      {Array.from({ length: count }, (_, i) => {
+        const x = r() * 1200, y = r() * 420, s = 0.4 + r() * 1.3;
+        return <circle key={i} cx={x.toFixed(1)} cy={y.toFixed(1)} r={s.toFixed(2)} fill="currentColor" className="nm-star" style={{ animationDelay: `${(r() * 6).toFixed(2)}s`, animationDuration: `${(3 + r() * 5).toFixed(2)}s` }} />;
+      })}
+      <path className="nm-polaris" d="M980 90 l3 9 l9 3 l-9 3 l-3 9 l-3 -9 l-9 -3 l9 -3z" fill="var(--accent, #ff5a1f)" />
+    </svg>
+  );
+}
+
+/** Daylight in Oslo through the year: a curve of hours, with today marked. Approximate solar maths, good to the minute-ish. */
+export function Daylight({ lat = 59.91, date, className, style }: P & { lat?: number; date?: Date }) {
+  const now = date ?? new Date();
+  const hours = (day: number) => {
+    const decl = 23.44 * Math.sin(((2 * Math.PI) / 365) * (day - 81)) * (Math.PI / 180);
+    const x = -Math.tan(lat * (Math.PI / 180)) * Math.tan(decl);
+    return x <= -1 ? 24 : x >= 1 ? 0 : (2 * Math.acos(x) * 180) / Math.PI / 15;
+  };
+  const doy = Math.floor((Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - Date.UTC(now.getUTCFullYear(), 0, 0)) / 864e5);
+  const pts = Array.from({ length: 74 }, (_, i) => { const d = i * 5; return [(d / 365) * 360, 100 - (hours(d) / 24) * 100]; });
+  const today = hours(doy);
+  const tx = (doy / 365) * 360, ty = 100 - (today / 24) * 100;
+  const h = Math.floor(today), m = Math.round((today - h) * 60);
+  return (
+    <figure className={`nm-daylight ${className ?? ''}`} style={style}>
+      <svg viewBox="0 -6 360 112" aria-hidden>
+        <path d={`M0 100 L${pts.map((p) => p.map((n) => n.toFixed(1)).join(' ')).join(' L')} L360 100 Z`} fill="currentColor" fillOpacity=".08" />
+        <path d={`M${pts.map((p) => p.map((n) => n.toFixed(1)).join(' ')).join(' L')}`} fill="none" stroke="currentColor" strokeOpacity=".6" className="nm-daylight-line" />
+        {['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'].map((mo, i) => <text key={i} x={i * 30 + 15} y="110" fontSize="7" textAnchor="middle" fill="currentColor" fillOpacity=".5" fontFamily="var(--font-mono, monospace)">{mo}</text>)}
+        <line x1={tx.toFixed(1)} x2={tx.toFixed(1)} y1="0" y2="100" stroke="var(--accent, #ff5a1f)" strokeDasharray="2 2" />
+        <circle cx={tx.toFixed(1)} cy={ty.toFixed(1)} r="4" fill="var(--accent, #ff5a1f)" className="nm-daylight-dot" />
+      </svg>
+      <figcaption><b>{h}h {String(m).padStart(2, '0')}m</b> of daylight in Oslo today</figcaption>
+    </figure>
+  );
+}
+
+/** Frame counter / focus marks for Productions frames. */
+export function FocusMarks({ className }: P) {
+  return (
+    <svg viewBox="0 0 100 60" preserveAspectRatio="none" className={`nm-focus ${className ?? ''}`} aria-hidden fill="none" stroke="currentColor" strokeWidth=".6">
+      <path d="M4 12 V4 H12 M88 4 H96 V12 M96 48 V56 H88 M12 56 H4 V48" />
+      <path d="M47 30 H53 M50 27 V33" strokeOpacity=".7" />
     </svg>
   );
 }

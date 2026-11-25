@@ -1,0 +1,69 @@
+/* dev.northem.group — precise and playful. Blueprint navy, cyan, a grid
+   underneath everything, monospace labels, a terminal that types. */
+.site-dev {
+  --bg: #0a101c; --surface: #101a2b; --fg: #e6f2ff; --muted: #8aa0bd; --accent: #3ce0ff; --accent-2: #ff5a1f; --line: #1d2b45; --radius: 6px;
+  --font-display: var(--f-space), system-ui, sans-serif; --font-body: var(--f-inter), system-ui, sans-serif; --font-mono: var(--f-jet), ui-monospace, monospace;
+}
+body:has(.site-dev) { background: #0a101c; }
+.site-dev .site-logo { font-family: var(--font-mono); text-transform: lowercase; letter-spacing: 0; }
+.site-dev .site-logo span::before { content: '<'; color: var(--accent); } .site-dev .site-logo span::after { content: ' />'; color: var(--accent); }
+.site-dev .site-mark { color: var(--accent); }
+.site-dev .page-head h1, .site-dev .nm-block > h2 { text-transform: none; }
+.site-dev .nm-pcard .nm-poster { border: 1px solid var(--line); }
+.site-dev .nm-pcard:hover .nm-poster { border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 15%, transparent); }
+
+.d-hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+.d-grid { position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 32px 32px; mask-image: radial-gradient(80% 70% at 60% 30%, #000, transparent); opacity: .7; }
+.d-hero-inner { position: relative; display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center; padding-top: clamp(64px, 10vw, 140px); padding-bottom: 48px; }
+@media (max-width: 900px) { .d-hero-inner { grid-template-columns: 1fr; } }
+.d-term { font-family: var(--font-mono); font-size: 14px; color: var(--muted); margin: 0; }
+.d-prompt { color: var(--accent); }
+.d-typed { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; max-width: 0; animation: d-type 2.4s steps(36) .3s forwards; }
+@keyframes d-type { to { max-width: 36ch; } }
+.d-caret { color: var(--accent); animation: d-blink 1s steps(2) infinite; }
+@keyframes d-blink { 50% { opacity: 0; } }
+.d-hero h1 { font-family: var(--font-display); font-size: clamp(44px, 7.5vw, 104px); line-height: .95; margin: 18px 0; letter-spacing: -.02em; }
+.d-hero h1 span { color: var(--accent); }
+.d-lede { color: var(--muted); font-size: clamp(16px, 1.6vw, 19px); max-width: 56ch; }
+.d-cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
+.d-blueprint { color: var(--accent); width: 100%; border: 1px solid var(--line); border-radius: var(--radius); background: color-mix(in srgb, var(--surface) 70%, transparent); }
+.d-stack { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; padding-top: 8px; padding-bottom: 32px; margin: 0; position: relative; }
+.d-stack li { font-family: var(--font-mono); font-size: 12px; border: 1px solid var(--line); padding: 4px 10px; border-radius: 999px; color: var(--muted); }
+
+.d-section { padding-top: clamp(56px, 8vw, 110px); }
+.d-h2 { font-family: var(--font-mono); font-weight: 500; font-size: clamp(22px, 3vw, 34px); margin: 0 0 28px; display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; }
+.d-h2 > span { color: var(--accent); }
+.d-h2 a { margin-left: auto; font-size: 13px; color: var(--muted); text-decoration: none; }
+.d-steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.d-steps li { border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; background: var(--surface); display: flex; flex-direction: column; gap: 6px; transition: transform .2s var(--ease), border-color .2s; }
+.d-steps li:hover { transform: translateY(-3px); border-color: var(--accent); }
+.d-steps code { color: var(--accent); font-family: var(--font-mono); }
+.d-steps strong { font-family: var(--font-display); font-size: 22px; }
+.d-steps p { color: var(--muted); margin: 0; font-size: 14px; }
+@media (max-width: 900px) { .d-steps { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .d-steps { grid-template-columns: 1fr; } }
+.d-brief { display: grid; grid-template-columns: 1fr 1.4fr; gap: 40px; }
+@media (max-width: 860px) { .d-brief { grid-template-columns: 1fr; } }
+.d-code { font-family: var(--font-mono); font-size: 13px; color: var(--accent); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; overflow-x: auto; }
+
+/* --- motion + new bits --- */
+.d-hero-side { display: flex; flex-direction: column; gap: 12px; }
+.d-status { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; background: color-mix(in srgb, var(--surface) 70%, transparent); display: flex; flex-direction: column; gap: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.d-status-head { display: flex; align-items: center; gap: 8px; } .d-status-head small { margin-left: auto; }
+.d-status-head i { width: 8px; height: 8px; border-radius: 50%; background: #28c840; box-shadow: 0 0 0 0 #28c840; animation: nm-ping 2s infinite; --accent: #28c840; }
+.d-uptime { display: grid; grid-template-columns: repeat(90, 1fr); gap: 2px; height: 22px; }
+.d-uptime b { background: #28c840; opacity: .75; border-radius: 1px; transition: transform .15s, opacity .15s; transform-origin: bottom; }
+.d-uptime b:hover { opacity: 1; transform: scaleY(1.25); }
+.d-uptime b.d-blip { background: #febc2e; }
+.d-stack li { transition: color .2s, border-color .2s, transform .2s var(--ease); animation: d-in .5s var(--ease) both; animation-delay: calc(var(--i) * 60ms + 600ms); }
+.d-stack li:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-2px); }
+@keyframes d-in { from { opacity: 0; transform: translateY(8px); } }
+.d-grid { animation: d-pan 40s linear infinite; }
+@keyframes d-pan { to { background-position: 32px 32px, 32px 32px; } }
+.d-shell { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center; }
+@media (max-width: 900px) { .d-shell { grid-template-columns: 1fr; } }
+.d-steps li { position: relative; overflow: hidden; }
+.d-steps li::after { content: ''; position: absolute; left: 0; top: 0; height: 2px; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .4s var(--ease); }
+.d-steps li:hover::after { transform: scaleX(1); }
+.site-dev .fx-chip, .site-dev .nm-chip { font-family: var(--font-mono); font-size: 13px; }

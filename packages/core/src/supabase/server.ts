@@ -1,7 +1,7 @@
 import 'server-only';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
-import { env, serverEnv } from '../env';
+import { cookieDomainFor, env, serverEnv } from '../env';
 
 /**
  * Supabase client acting as the signed-in visitor (RLS applies).
@@ -10,7 +10,8 @@ import { env, serverEnv } from '../env';
  */
 export async function supabaseServer() {
   const store = await cookies();
-  const domain = serverEnv().cookieDomain;
+  const host = (await headers()).get('host')?.split(':')[0] ?? '';
+  const domain = cookieDomainFor(host, serverEnv().cookieDomain);
   return createServerClient(env.supabaseUrl, env.supabaseAnonKey, {
     cookieOptions: domain ? { domain } : undefined,
     cookies: {
@@ -25,3 +26,4 @@ export async function supabaseServer() {
     },
   });
 }
+

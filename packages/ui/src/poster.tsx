@@ -7,11 +7,11 @@ type Mood = 'frost' | 'ash' | 'storm' | 'night' | 'sea' | 'grid' | 'pop' | 'warm
 
 export function moodFor(seed: string, kind?: ProjectKind | MediaKind | string, hint?: string): Mood {
   const s = `${seed} ${hint ?? ''}`.toLowerCase();
-  if (/frost|snow|ice|white|svalbard|cold|glacier/.test(s)) return 'frost';
-  if (/ash|lava|volcan|fire/.test(s)) return 'ash';
-  if (/storm|low|wind|hurricane/.test(s)) return 'storm';
-  if (/night|natt|dark|tunnel/.test(s)) return 'night';
-  if (/salt|sea|vann|fjord|boat/.test(s)) return 'sea';
+  if (/\b(frost|snow|ice|white|svalbard|cold|glacier|arctic)\b/.test(s)) return 'frost';
+  if (/\b(ash|lava|volcan\w*|fire)\b/.test(s)) return 'ash';
+  if (/\b(storm|low|wind|hurricane|lofoten)\b/.test(s)) return 'storm';
+  if (/\b(night|natt\w*|dark|tunnel)\b/.test(s)) return 'night';
+  if (/\b(salt\w*|sea|ocean|fjord|boat|senja)\b/.test(s)) return 'sea';
   if (['website', 'app', 'tool', 'platform', 'game', 'screenshot'].includes(kind ?? '')) return 'grid';
   if (['social'].includes(kind ?? '')) return 'pop';
   return 'warm';
