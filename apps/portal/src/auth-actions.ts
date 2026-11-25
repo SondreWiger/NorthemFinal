@@ -2,14 +2,10 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { supabaseServer } from '@northem/core/supabase/server';
-import { hasSupabase } from '@northem/core/env';
+import { hasSupabase, safeNext } from '@northem/core/env';
 
 export interface AuthState { ok?: boolean; message?: string }
 
-function safeNext(next: FormDataEntryValue | null): string {
-  const n = typeof next === 'string' ? next : '/';
-  return n.startsWith('/') && !n.startsWith('//') ? n : '/';
-}
 
 async function origin() {
   const h = await headers();

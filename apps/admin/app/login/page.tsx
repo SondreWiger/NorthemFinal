@@ -2,14 +2,14 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { NorthemMark } from '@northem/ui/micro';
 import { getSession, currentOrg } from '@northem/core/session';
-import { hasSupabase } from '@northem/core/env';
+import { hasSupabase, safeNext } from '@northem/core/env';
 import { LoginForm } from '@/login-form';
 
 export const metadata: Metadata = { title: 'Sign in' };
 
 export default async function Login(props: PageProps<'/login'>) {
   const sp = await props.searchParams;
-  const next = typeof sp.next === 'string' && sp.next.startsWith('/') && !sp.next.startsWith('//') ? sp.next : '/';
+  const next = safeNext(sp.next);
   if (hasSupabase && (await getSession())) redirect(next);
   const org = hasSupabase ? await currentOrg() : null;
   const brand = `${org?.name ?? 'Northem'} Admin`;

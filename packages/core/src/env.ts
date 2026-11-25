@@ -66,3 +66,15 @@ export function cookieDomainFor(host: string, domain: string | undefined): strin
   const h = host.split(':')[0]!.toLowerCase();
   return h === bare || h.endsWith(`.${bare}`) ? `.${bare}` : undefined;
 }
+
+// A same-site path to land on after sign-in. Anything that a browser could read as
+// another origin ("//x", "/\x", control characters, "/%2F…") falls back to "/".
+export function safeNext(raw: unknown): string {
+  if (typeof raw !== 'string' || !raw.startsWith('/')) return '/';
+  if (/[\\\u0000-\u001f\u007f]/.test(raw) || raw.startsWith('//')) return '/';
+  try {
+    const u = new URL(raw, 'http://n.invalid');
+    if (u.origin !== 'http://n.invalid') return '/';
+    return `${u.pathname}${u.search}${u.hash}` || '/';
+  } catch { return '/'; }
+}
