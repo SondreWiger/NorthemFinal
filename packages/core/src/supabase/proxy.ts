@@ -1,6 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-import { env, hasSupabase } from '../env';
+import { cookieDomainFor, env, hasSupabase } from '../env';
 
 /**
  * Refreshes the Supabase session in proxy.ts and returns the response plus
@@ -8,11 +8,7 @@ import { env, hasSupabase } from '../env';
  */
 export async function refreshSession(request: NextRequest, response = NextResponse.next({ request })) {
   if (!hasSupabase) return { response, user: null };
-  const configured = process.env.COOKIE_DOMAIN || undefined;
-  const host = request.nextUrl.hostname.toLowerCase();
-  const bare = configured?.replace(/^\./, '').toLowerCase();
-  // Same rule as cookieDomainFor(): previews on other hosts keep host-only cookies.
-  const domain = bare && (host === bare || host.endsWith(`.${bare}`)) ? configured : undefined;
+  const domain = cookieDomainFor(request.headers.get('host') ?? request.nextUrl.hostname, process.env.COOKIE_DOMAIN || undefined);
   let res = response;
   const supabase = createServerClient(env.supabaseUrl, env.supabaseAnonKey, {
     cookieOptions: domain ? { domain } : undefined,

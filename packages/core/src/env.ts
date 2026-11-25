@@ -52,3 +52,17 @@ export function siteForDivisionSlug(slug: string | null | undefined): keyof type
   for (const [key, s] of Object.entries(SITES)) if (s.division === slug) return key as keyof typeof SITES;
   return 'landing';
 }
+
+/**
+ * The cookie domain to use on this host, or undefined for a host-only cookie.
+ * Shared sign-in only works on the real domain: on *.vercel.app previews or
+ * localhost the browser rejects a ".northem.group" cookie, and it always
+ * rejects public suffixes such as ".vercel.app".
+ */
+export function cookieDomainFor(host: string, domain: string | undefined): string | undefined {
+  if (!domain) return undefined;
+  const bare = domain.trim().replace(/^\./, '').toLowerCase();
+  if (!bare.includes('.') || /(^|\.)(vercel\.app|netlify\.app|pages\.dev|localhost)$/.test(bare)) return undefined;
+  const h = host.split(':')[0]!.toLowerCase();
+  return h === bare || h.endsWith(`.${bare}`) ? `.${bare}` : undefined;
+}
